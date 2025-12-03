@@ -1,11 +1,14 @@
 package dev.shvetsov.webfluxpostgresql.service
 
 import dev.shvetsov.webfluxpostgresql.model.AppUser
+import dev.shvetsov.webfluxpostgresql.model.AppUserRequest
+import dev.shvetsov.webfluxpostgresql.model.BadRequestException
 import dev.shvetsov.webfluxpostgresql.model.NotFoundException
 import dev.shvetsov.webfluxpostgresql.repository.AppUserRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.switchIfEmpty
 
 @Service
 class AppUserService(
@@ -16,4 +19,16 @@ class AppUserService(
     fun findById(id: Long): Mono<AppUser> = appUserRepository
         .findById(id)
         .switchIfEmpty(Mono.error { NotFoundException("User with id $id was not found.") })
+
+    fun createUser(appUserRequest: AppUserRequest): Mono<AppUser> =
+        appUserRepository.findByEmail(appUserRequest.email)
+            .flatMap { Mono.error<AppUser>(BadRequestException("User with email ${appUserRequest.email} already exists.")) }
+            .switchIfEmpty {
+                appUserRepository.save(
+                    AppUser(
+                        name = appUserRequest.name,
+                        email = appUserRequest.email
+                    )
+                )
+            }
 }
