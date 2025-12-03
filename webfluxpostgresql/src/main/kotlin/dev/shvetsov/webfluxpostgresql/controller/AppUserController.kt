@@ -3,6 +3,7 @@ package dev.shvetsov.webfluxpostgresql.controller
 import dev.shvetsov.webfluxpostgresql.model.AppUser
 import dev.shvetsov.webfluxpostgresql.model.AppUserRequest
 import dev.shvetsov.webfluxpostgresql.service.AppUserService
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,6 +25,6 @@ class AppUserController(
     fun getById(@PathVariable id: Long) : Mono<AppUser> = appUserService.findById(id)
 
     @PostMapping("/users")
-    fun createUser(@RequestBody appUserRequest: AppUserRequest) : Mono<AppUser> =
+    fun createUser(@Valid @RequestBody appUserRequest: AppUserRequest) : Mono<AppUser> =
         appUserService.createUser(appUserRequest)
 }

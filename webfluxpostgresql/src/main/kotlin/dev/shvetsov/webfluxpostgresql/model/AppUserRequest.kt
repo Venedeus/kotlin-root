@@ -1,6 +1,8 @@
 package dev.shvetsov.webfluxpostgresql.model
 
+import jakarta.validation.constraints.NotBlank
+
 data class AppUserRequest(
-    val name: String,
-    val email: String
+    @field:NotBlank val name: String,
+    @field:NotBlank val email: String
 )
