@@ -21,8 +21,7 @@ class AppUserService(
         .switchIfEmpty(Mono.error { NotFoundException("User with id $id was not found.") })
 
     fun createUser(appUserRequest: AppUserRequest): Mono<AppUser> =
-        appUserRepository.findByEmail(appUserRequest.email)
-            .flatMap { Mono.error<AppUser>(BadRequestException("User with email ${appUserRequest.email} already exists.")) }
+        findByEmailOrError(appUserRequest)
             .switchIfEmpty {
                 appUserRepository.save(
                     AppUser(
@@ -31,4 +30,22 @@ class AppUserService(
                     )
                 )
             }
+
+    fun updateUser(id: Long, appUserRequest: AppUserRequest): Mono<AppUser> =
+        findById(id).flatMap { foundUser ->
+            findByEmailOrError(appUserRequest).switchIfEmpty(
+                appUserRepository
+                    .save(
+                        AppUser(
+                            id = id,
+                            name = appUserRequest.name,
+                            email = appUserRequest.email
+                        )
+                    )
+            )
+        }
+
+    private fun findByEmailOrError(appUserRequest: AppUserRequest): Mono<AppUser> =
+        appUserRepository.findByEmail(appUserRequest.email)
+            .flatMap { Mono.error<AppUser>(BadRequestException("User with email ${appUserRequest.email} already exists.")) }
 }

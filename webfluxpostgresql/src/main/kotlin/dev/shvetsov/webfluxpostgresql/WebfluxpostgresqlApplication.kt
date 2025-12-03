@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class WebfluxpostgresqlApplication
 
 fun main(args: Array<String>) {
-	runApplication<WebfluxpostgresqlApplication>(*args)
+    runApplication<WebfluxpostgresqlApplication>(*args)
 }

@@ -4,12 +4,7 @@ import dev.shvetsov.webfluxpostgresql.model.AppUser
 import dev.shvetsov.webfluxpostgresql.model.AppUserRequest
 import dev.shvetsov.webfluxpostgresql.service.AppUserService
 import jakarta.validation.Valid
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -19,12 +14,18 @@ class AppUserController(
     private val appUserService: AppUserService
 ) {
     @GetMapping("/users")
-    fun getAll() : Flux<AppUser> = appUserService.findAll()
+    fun getAll(): Flux<AppUser> = appUserService.findAll()
 
     @GetMapping("/users/{id}")
-    fun getById(@PathVariable id: Long) : Mono<AppUser> = appUserService.findById(id)
+    fun getById(@PathVariable id: Long): Mono<AppUser> = appUserService.findById(id)
 
     @PostMapping("/users")
-    fun createUser(@Valid @RequestBody appUserRequest: AppUserRequest) : Mono<AppUser> =
+    fun createUser(@Valid @RequestBody appUserRequest: AppUserRequest): Mono<AppUser> =
         appUserService.createUser(appUserRequest)
+
+    @PutMapping("/users/{id}")
+    fun updateUser(
+        @Valid @RequestBody appUserRequest: AppUserRequest,
+        @PathVariable id: Long
+    ): Mono<AppUser> = appUserService.updateUser(id, appUserRequest)
 }
