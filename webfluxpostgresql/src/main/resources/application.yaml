@@ -2,7 +2,7 @@ spring:
   application:
     name: webfluxpostgresql
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/
+    url: r2dbc:postgresql://172.20.20.42:5432/
     username: postgres
     password: password
 server:
