@@ -47,5 +47,8 @@ class AppUserService(
 
     private fun findByEmailOrError(appUserRequest: AppUserRequest): Mono<AppUser> =
         appUserRepository.findByEmail(appUserRequest.email)
-            .flatMap { Mono.error<AppUser>(BadRequestException("User with email ${appUserRequest.email} already exists.")) }
+            .flatMap { Mono.error(BadRequestException("User with email ${appUserRequest.email} already exists.")) }
+
+    fun deleteUser(id: Long): Mono<Void> =
+        findById(id).flatMap { foundUser -> appUserRepository.delete(foundUser) }
 }

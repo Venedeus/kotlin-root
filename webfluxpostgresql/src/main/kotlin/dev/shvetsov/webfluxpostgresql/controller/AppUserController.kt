@@ -4,6 +4,7 @@ import dev.shvetsov.webfluxpostgresql.model.AppUser
 import dev.shvetsov.webfluxpostgresql.model.AppUserRequest
 import dev.shvetsov.webfluxpostgresql.service.AppUserService
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -28,4 +29,10 @@ class AppUserController(
         @Valid @RequestBody appUserRequest: AppUserRequest,
         @PathVariable id: Long
     ): Mono<AppUser> = appUserService.updateUser(id, appUserRequest)
+
+    @DeleteMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteUser(
+       @PathVariable id: Long
+    ): Mono<Void> = appUserService.deleteUser(id)
 }
